@@ -12,29 +12,42 @@ class Processor(tradeGood: TradeGood,
 
   def process(set: Set[ApiWalletTransaction]): List[String] = {
     var res = List.empty[String]
-    res ::= "Results for %s:".format(tradeGood.what)
+    res ::= "==="
+    res ::= "Results for '%s':".format(tradeGood.what)
+    res ::= "==="
+
+    val groupedBy = set.groupBy(_.getTypeID)
+    val typeMap = groupedBy.map(e => (e._2.head.getTypeName, e._1)).toMap
+    val matchingTypes = typeMap.filter(e => e._1.matches(tradeGood.what))
+
+    matchingTypes.foreach(e => {
+      res :::= process(groupedBy(e._2), e._1, e._2)
+    })
+
+    res.reverse
+  }
+
+  private def process(set: Set[ApiWalletTransaction],
+                      name: String,
+                      id: Int): List[String] = {
+
+    var res = List.empty[String]
 
     val fSet = tradeGood.filters.foldLeft(set)((s, f) => {
       val ff = filters(f)
       ff.filter(s)
     })
 
-    val tradeGoodId = fSet.find(_.getTypeName.matches(tradeGood.what)) match {
-      case None => -1
-      case Some(t) => t.getTypeID
+    if (fSet.isEmpty) {
+      return res
     }
 
-    if (tradeGoodId < 0) {
-      res ::= "None"
-    } else {
-      val ffSet = fSet.filter(_.getTypeID == tradeGoodId)
-      val r = tradeGood.aggregators.foldLeft(List.empty[String])((l, a) => {
-        val aa = aggregators(a)
-        aa.aggregate(ffSet) ::: l
-      })
-      res :::= r
-    }
+    res ::= "Matched '%s'".format(name)
+    res :::= tradeGood.aggregators.foldLeft(List.empty[String])((l, a) => {
+      val aa = aggregators(a)
+      aa.aggregate(fSet) ::: l
+    })
 
-    res.reverse
+    "***" :: res.map("  " + _)
   }
 }

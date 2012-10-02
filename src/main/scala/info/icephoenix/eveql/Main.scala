@@ -105,7 +105,7 @@ object Main {
       val cpus = goods.map(new Processor(_, filters, aggregators))
 
       cpus.foreach(cpu => {
-        println(cpu.process(transactions))
+        cpu.process(transactions).foreach(println(_))
       })
 
     } catch {
