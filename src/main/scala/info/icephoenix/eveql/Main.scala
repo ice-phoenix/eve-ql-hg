@@ -4,8 +4,8 @@ import com.beimin.eveapi.account.apikeyinfo.ApiKeyInfoParser
 import com.beimin.eveapi.account.characters.CharactersParser
 import com.beimin.eveapi.character.wallet.transactions.{WalletTransactionsParser => CharTransactionsParser}
 import com.beimin.eveapi.core.ApiAuthorization
+import com.beimin.eveapi.corporation.sheet.CorpSheetParser
 import com.beimin.eveapi.corporation.wallet.transactions.{WalletTransactionsParser => CorpTransactionsParser}
-import com.beimin.eveapi.shared.wallet.transactions.ApiWalletTransaction
 import org.streum.configrity.Configuration
 
 import info.icephoenix.eveql.aggregate.AggregatorFactory
@@ -38,7 +38,10 @@ object Main {
       val transactions = getApiKeyType(auth) match {
         case KeyType.Account => {
           val charName = config[String]("charInfo.name")
-          CharactersParser.getInstance().getResponse(auth).getAll.find(_.getName == charName) match {
+          CharactersParser.getInstance()
+          .getResponse(auth)
+          .getAll
+          .find(_.getName == charName) match {
             case None => throw new IllegalArgumentException(
               "Cannot find character '%s'".format(charName))
             case Some(char) => {
@@ -52,11 +55,29 @@ object Main {
         }
 
         case KeyType.Character => {
-          Set.empty[ApiWalletTransaction]
+          downloader.download(
+            CharTransactionsParser.getInstance(),
+            new ApiAuthorization(id, vCode),
+            1000
+          )
         }
 
         case KeyType.Corporation => {
-          Set.empty[ApiWalletTransaction]
+          val walletName = config[String]("corpName.walletName")
+          CorpSheetParser.getInstance()
+          .getResponse(auth)
+          .getWalletDivisions
+          .find(_._2 == walletName) match {
+            case None => throw new IllegalArgumentException(
+              "Cannot find wallet '%s'".format(walletName))
+            case Some(wd) => {
+              downloader.download(
+                CorpTransactionsParser.getInstance(),
+                new ApiAuthorization(id, vCode),
+                wd._1
+              )
+            }
+          }
         }
       }
 
