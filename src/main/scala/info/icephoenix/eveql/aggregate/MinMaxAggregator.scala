@@ -3,7 +3,11 @@ package info.icephoenix.eveql.aggregate
 import com.beimin.eveapi.shared.wallet.transactions.ApiWalletTransaction
 import org.streum.configrity.Configuration
 
+import info.icephoenix.eveql.Util
+
 class MinMaxAggregator(val config: Configuration) extends Aggregator {
+
+  val DF = Util.DF
 
   val fType = config[String]("type")
 
@@ -16,8 +20,8 @@ class MinMaxAggregator(val config: Configuration) extends Aggregator {
     val min = set.minBy(_.getPrice).getPrice
     val max = set.maxBy(_.getPrice).getPrice
     List(
-      "Max price: %.2f ISK".format(max),
-      "Min price: %.2f ISK".format(min)
+      "Max price: %s".format(DF.format(max)),
+      "Min price: %s".format(DF.format(min))
     )
   }
 }

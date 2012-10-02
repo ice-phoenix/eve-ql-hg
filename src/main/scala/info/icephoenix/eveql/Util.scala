@@ -1,6 +1,6 @@
 package info.icephoenix.eveql
 
-import java.text.SimpleDateFormat
+import java.text.{DecimalFormat, SimpleDateFormat}
 import org.streum.configrity.converter.ValueConverter
 
 import info.icephoenix.eveql.misc.TradeGood
@@ -14,6 +14,8 @@ object Util {
   }
 
   val SDF = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss")
+
+  val DF = new DecimalFormat("###,###,###,###,###.## ISK")
 
   implicit object TradeGoodConverter extends ValueConverter[TradeGood] {
     val regex = """(.*)\s*\$\$\s*(.*)\s*\$\$\s*(.*)""".r
