@@ -17,6 +17,6 @@ class AvgAggregator(val config: Configuration) extends Aggregator {
       val (sum, count) = r
       (sum + e.getPrice * e.getQuantity, count + e.getQuantity)
     })
-    List("Average price: %f ISK".format((data._1 / data._2)))
+    List("Average price: %.2f ISK".format((data._1 / data._2)))
   }
 }

@@ -16,8 +16,8 @@ class MinMaxAggregator(val config: Configuration) extends Aggregator {
     val min = set.minBy(_.getPrice).getPrice
     val max = set.maxBy(_.getPrice).getPrice
     List(
-      "Max price: %f ISK".format(max),
-      "Min price: %f ISK".format(min)
+      "Max price: %.2f ISK".format(max),
+      "Min price: %.2f ISK".format(min)
     )
   }
 }
