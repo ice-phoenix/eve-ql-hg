@@ -18,8 +18,15 @@ import scala.collection.JavaConversions._
 
 object Main {
   def main(args: Array[String]) {
+
+    val configFileName = if (args.length > 0) {
+      args(0)
+    } else {
+      "test.conf"
+    }
+
     try {
-      val config = Configuration.load("test.conf")
+      val config = Configuration.load(configFileName)
 
       val id = config[Int]("apiKeyInfo.id")
       val vCode = config[String]("apiKeyInfo.vCode")
