@@ -12,11 +12,11 @@ class AvgAggregator(val config: Configuration) extends Aggregator {
       "Cannot create AvgAggregator from '%s' aggregator".format(fType))
   }
 
-  override def aggregate(set: Set[ApiWalletTransaction]): String = {
-    val ag = set.foldLeft((0.0, 0))((r, e) => {
+  override def aggregate(set: Set[ApiWalletTransaction]): List[String] = {
+    val data = set.foldLeft((0.0, 0))((r, e) => {
       val (sum, count) = r
       (sum + e.getPrice * e.getQuantity, count + e.getQuantity)
     })
-    "Average price: %d ISK".format((ag._1 / ag._2).round)
+    List("Average price: %d ISK".format((data._1 / data._2).round))
   }
 }

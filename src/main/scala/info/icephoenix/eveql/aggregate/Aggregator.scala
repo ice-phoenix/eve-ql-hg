@@ -4,6 +4,6 @@ import com.beimin.eveapi.shared.wallet.transactions.ApiWalletTransaction
 
 trait Aggregator {
 
-  def aggregate(set: Set[ApiWalletTransaction]): String
+  def aggregate(set: Set[ApiWalletTransaction]): List[String]
 
 }

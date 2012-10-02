@@ -6,6 +6,7 @@ object AggregatorFactory {
   def createAggregator(config: Configuration): Aggregator = {
     config[String]("type") match {
       case "avg" => new AvgAggregator(config)
+      case "minmax" => new MinMaxAggregator(config)
       case unknown => throw new IllegalArgumentException(
         "Unknown aggregator type '%s'".format(unknown))
     }

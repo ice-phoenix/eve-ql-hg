@@ -30,7 +30,7 @@ class Processor(tradeGood: TradeGood,
       val ffSet = fSet.filter(_.getTypeID == tradeGoodId)
       val r = tradeGood.aggregators.foldLeft(List.empty[String])((l, a) => {
         val aa = aggregators(a)
-        aa.aggregate(ffSet) :: l
+        aa.aggregate(ffSet) ::: l
       })
       res :::= r
     }
