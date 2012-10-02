@@ -9,6 +9,7 @@ import com.beimin.eveapi.shared.wallet.transactions.ApiWalletTransaction
 import org.streum.configrity.Configuration
 
 import info.icephoenix.eveql.aggregate.AggregatorFactory
+import info.icephoenix.eveql.download.FullWalletTransactionsDownloader
 import info.icephoenix.eveql.filter.FilterFactory
 import info.icephoenix.eveql.misc._
 import info.icephoenix.eveql.processing.Processor
@@ -32,6 +33,8 @@ object Main {
       val vCode = config[String]("apiKeyInfo.vCode")
       val auth = new ApiAuthorization(id, vCode)
 
+      val downloader = new FullWalletTransactionsDownloader()
+
       val transactions = getApiKeyType(auth) match {
         case KeyType.Account => {
           val charName = config[String]("charInfo.name")
@@ -39,10 +42,11 @@ object Main {
             case None => throw new IllegalArgumentException(
               "Cannot find character '%s'".format(charName))
             case Some(char) => {
-              CharTransactionsParser.getInstance()
-              .getResponse(
-                new ApiAuthorization(id, char.getCharacterID, vCode), 1000
-              ).getAll.toSet
+              downloader.download(
+                CharTransactionsParser.getInstance(),
+                new ApiAuthorization(id, char.getCharacterID, vCode),
+                1000
+              )
             }
           }
         }
