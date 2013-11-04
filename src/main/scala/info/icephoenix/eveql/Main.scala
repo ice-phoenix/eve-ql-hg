@@ -63,7 +63,7 @@ object Main {
         }
 
         case KeyType.Corporation => {
-          val walletName = config[String]("corpName.walletName")
+          val walletName = config[String]("corpInfo.walletName")
           CorpSheetParser.getInstance()
           .getResponse(auth)
           .getWalletDivisions
