@@ -86,8 +86,7 @@ object Main {
 
       val filtersConfig = config.detach("filters")
       val allFilters = filtersConfig[List[String]]("all")
-      val filters = allFilters.map(e => {
-        val fName = e
+      val filters = allFilters.map(fName => {
         val fConfig = filtersConfig.detach(fName)
         val filter = FilterFactory.createFilter(fConfig)
         (fName, filter)
@@ -95,8 +94,7 @@ object Main {
 
       val aggregatorsConfig = config.detach("aggregators")
       val allAggregators = aggregatorsConfig[List[String]]("all")
-      val aggregators = allAggregators.map(e => {
-        val aName = e
+      val aggregators = allAggregators.map(aName => {
         val aConfig = aggregatorsConfig.detach(aName)
         val aggregator = AggregatorFactory.createAggregator(aConfig)
         (aName, aggregator)
